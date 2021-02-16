@@ -15,18 +15,88 @@ import * as mainActions from "../../actions/mainActions";
 import { connect } from 'react-redux';
 // core components
 import ReactTable from "components/ReactTable/ReactTable.js";
+import ReactBSAlert from "react-bootstrap-sweetalert";
+
 
 class ReactTables extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
+      modal: null,
+      codcolegio:null
     };
   }
 
   async componentDidMount() {
     await this.ir();
+    this.props.verColegio();
+    this.setState({codcolegio:this.props.colegio.codigo});
   }
+
+  ponerModalconCaja = (codigoweb, alumno) => {
+    const texto = "Esta seguro de hacer el bloqueo?"
+    this.setState({
+      modal: (
+        <ReactBSAlert
+          warning
+          showCancel
+          confirmBtnText="Si, Bloquea!"
+          confirmBtnBsStyle="danger"
+          title={alumno}
+          onConfirm={() => this.bloquearAlumno(codigoweb)}
+          onCancel={() => this.setState({modal:null})}
+          focusCancelBtn
+        >
+          {texto}
+        </ReactBSAlert>
+          
+       
+      )
+    });
+  }
+
+  activarAlumno = async (objectId) => {
+    let url = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/activarAlumno"
+    const data = {
+      codigocolegio:this.state.codcolegio,
+      codigo:objectId
+    };
+    let respuesta = await fetch(url, {
+      method: 'POST', 
+      body: JSON.stringify(data),
+      headers:{
+          'Content-Type': 'application/json'
+      },
+      Accept: 'application/json',
+    })
+    .catch(error => {
+        console.log(error);
+    });
+    let result = await respuesta.json();
+    alert("Alumno Reactivado con exito");
+    await this.ir();
+  } 
+  
+  bloquearAlumno = async (codigoweb) => {
+    let url = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/bloquearAlumno"
+    const data = {
+      codigo:codigoweb
+    };
+    let respuesta = await fetch(url, {
+      method: 'POST', 
+      body: JSON.stringify(data),
+      headers:{
+          'Content-Type': 'application/json'
+      },
+      Accept: 'application/json',
+    })
+    .catch(error => {
+        console.log(error);
+    });
+    let result = await respuesta.json();
+    await this.ir();
+  } 
 
   ir = async ()=>{
     let table = this.props.alumnos.map((prop, key) => {
@@ -40,6 +110,7 @@ class ReactTables extends React.Component {
           // we've added some custom button actions
           <div className="actions-right">
             {/* use this button to add a like kind of action */}
+            
             <Button
               onClick={() => {
                 let obj = this.state.data.find((o) => o.id === key);
@@ -63,20 +134,7 @@ class ReactTables extends React.Component {
             </Button>{" "}
             {/* use this button to add a edit kind of action */}
             <Button
-              onClick={() => {
-                let obj = this.state.data.find((o) => o.id === key);
-                alert(
-                  "You've clicked EDIT button on \n{ \nName: " +
-                    obj.name +
-                    ", \nposition: " +
-                    obj.position +
-                    ", \noffice: " +
-                    obj.office +
-                    ", \nage: " +
-                    obj.age +
-                    "\n}."
-                );
-              }}
+             
               color="warning"
               size="sm"
               className="btn-icon btn-link edit"
@@ -84,27 +142,29 @@ class ReactTables extends React.Component {
               <i className="fa fa-edit" />
             </Button>{" "}
             {/* use this button to remove the data row */}
-            <Button
-              onClick={() => {
-                var data = this.state.data;
-                data.find((o, i) => {
-                  if (o.id === key) {
-                    // here you should add some custom code so you can delete the data
-                    // from this component and from your server as well
-                    data.splice(i, 1);
-                    console.log(data);
-                    return true;
-                  }
-                  return false;
-                });
-                this.setState({ data: data });
-              }}
-              color="danger"
-              size="sm"
-              className="btn-icon btn-link remove"
-            >
-              <i className="fa fa-times" />
-            </Button>{" "}
+            {prop.codigo=="------" ? 
+              ( <Button
+                onClick={() => {
+                  this.activarAlumno(prop._id);
+                }}
+                color="success"
+                size="sm"
+                className="btn-icon btn-link like"
+              >
+                <i className="fa fa-heart" />
+              </Button>) : (
+                <Button
+                onClick={() => {
+                  this.ponerModalconCaja(prop.codigo, prop.nombre);
+                }}
+                color="danger"
+                size="sm"
+                className="btn-icon btn-link remove"
+              >
+                <i className="fa fa-times" />
+              </Button>
+              )}
+            
           </div>
         ),
       };
@@ -118,6 +178,7 @@ class ReactTables extends React.Component {
       <>
         <div className="content">
           <Row>
+            {this.state.modal}
             <Col md="12">
               <Card>
                 <CardHeader>
