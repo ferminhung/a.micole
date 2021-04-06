@@ -14,7 +14,7 @@ import {
   Label,
   FormGroup,
   Input,
-  Alert, 
+  Alert,
   Table,
   Row,
   Col,
@@ -252,14 +252,11 @@ class Widgets extends React.Component {
             </p>
           }
           >
-          
         </ReactBSAlert>
-          
-       
       ),
     });
   }
-  
+
   render() {
     return (
       <>

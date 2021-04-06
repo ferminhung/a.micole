@@ -1,7 +1,4 @@
 const INITIAL_STATE = {
-    platos: [],
-    idpedido:{inseertedId:null},
-    pedido: {},
     total:0,
     colegio:[],
     archivo:null,
@@ -30,8 +27,7 @@ const INITIAL_STATE = {
         { value: 17, label: "Primaria", key:"B11" },
         { value: 18, label: "Secundaria", key:"D18" },
         { value: 19, label: "Todos", key:"*" },
-        
-      ],
+    ],
     Seccion: [
         { value: "A", label:"A" },
         { value: "B", label:"B" },
@@ -41,7 +37,7 @@ const INITIAL_STATE = {
         { value: "F", label:"F" },
         { value: "U", label:"U" },
         { value: "*", label:"*" },
-      ],
+    ],
     Primaria: [
         { value: "1", label:"Lengua y Literatura", key:"B11-1" },
         { value: "2", label:"Matemática" },
@@ -49,7 +45,7 @@ const INITIAL_STATE = {
         { value: "4", label:"Ciencias Sociales" },
         { value: "5", label:"Educación Estética" },
         { value: "6", label:"Educación Física y Deportes" },
-      ],
+    ],
     Secundaria: [
         { value: "1", label:"Castellano", key:"100000" },
         { value: "2", label:"Inglés y otras Lenguas", key:"0" },
@@ -65,60 +61,33 @@ const INITIAL_STATE = {
         { value: "12", label:"Biología", key:"0"  },
         { value: "13", label:"Form. Soberanía Nacional", key:"0"  },
         { value: "14", label:"Ciencias de la Tierra", key:"0"  },
-      ],
+    ],
 }
 
 export default (state = INITIAL_STATE, action) => {
-    let total = 0;
 
     switch (action.type) {
-        
-        case 'agregar_plato':
-            action.payload[0].carrito.map(subtotal => {
-                total=total+(parseInt(subtotal.cantidad)*parseInt(subtotal.precio));
-            });
-            return { 
-                ...state, 
-                pedido: action.payload[0].carrito,
-                total:total
-            };
-       
         case 'ver_credenciales':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 as3:action.payload[0],
                 ss3:action.payload[1]
             };
         case 'ver_colegio':
-            return { 
-                ...state, 
+            return {
+                ...state,
             };
         case 'set_colegio':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 colegio:action.payload[0],
                 gradofijo:action.payload[1]
             };
-        case 'cerrar_pedido':
-            return { 
-                ...state, 
-                idpedido:null,
-                pedido: {},
-                total:0
-            }; 
         case 'ver_alumnos':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 alumnos:action.payload[0],
                 grados:action.payload[1],
-            }; 
-        case 'detalle_plato':
-            console.log(action.payload, state.platos.filter(plato => plato.id==action.payload));
-            const plato = state.platos.filter(plato => plato.id==action.payload);
-            console.log(plato);
-            return { 
-                ...state,
-                plato: plato
             };
         default: return state;
     };

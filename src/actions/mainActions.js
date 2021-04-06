@@ -1,48 +1,27 @@
-
-
-
-
-
-export const verIdPedido = () => async (dispatch) => {
-  dispatch({
-    type: 'ver_id_pedido', 
-  })
-}
-
 export const setColegio = (colegio, grado) => async (dispatch) => {
   dispatch({
-    type: 'set_colegio', 
+    type: 'set_colegio',
     payload:[colegio,grado]
   })
 }
-
 export const verColegio= () => async (dispatch) => {
   dispatch({
-    type: 'ver_colegio', 
+    type: 'ver_colegio',
   })
 }
-
 export const setArchivoSubir = (archivo) =>  (dispatch) => {
   dispatch({
-    type: 'set_archivosubir', 
+    type: 'set_archivosubir',
     payload: archivo
   })
 }
-
-export const detallePlato = (idplato) => (dispatch) => {
-  dispatch({
-    type: 'detalle_plato', 
-    payload: idplato
-  })
-}
-
 export const verAlumnos = (id,grado) => async (dispatch) => {
   if(grado!="" || grado!==undefined){
     grado=grado.substr(3,6).toUpperCase();
   }
   let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/veralumnos?id='+id+'&grado='+grado;
   let respuesta = await fetch(url, {
-      method: 'GET', 
+      method: 'GET',
       headers:{
           'Content-Type': 'application/json'
       },
@@ -53,7 +32,7 @@ export const verAlumnos = (id,grado) => async (dispatch) => {
   });
   let result = await respuesta.json();
   dispatch({
-    type: 'ver_alumnos', 
+    type: 'ver_alumnos',
     payload: result
   });
 }
@@ -61,7 +40,7 @@ export const verAlumnos = (id,grado) => async (dispatch) => {
 export const verCredenciales =  () => async (dispatch) => {
     const url = 'https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/creds';
     let respuesta = await fetch(url, {
-        method: 'POST', 
+        method: 'POST',
         mode: 'cors',
         cache: 'default',
         headers:{
@@ -73,7 +52,7 @@ export const verCredenciales =  () => async (dispatch) => {
     });
     let insercion = await respuesta.json();
     dispatch({
-        type: 'ver_credenciales', 
+        type: 'ver_credenciales',
         payload: insercion
     });
   }

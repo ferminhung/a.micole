@@ -1,4 +1,3 @@
-
 import React from "react";
 // react plugin used to create charts
 import { Line, Bar, Doughnut } from "react-chartjs-2";
@@ -40,9 +39,7 @@ class Dashboard extends React.Component {
       revisados:[],
       totalrevisados:0,
     };
-    
   }
-  
   ponerGrados = () =>{
     //this.setState({grados:this.props.grados});
   }
@@ -68,7 +65,7 @@ class Dashboard extends React.Component {
     };
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/verRespuestas';
     let respuesta = await fetch(url, {
-        method: 'POST', 
+        method: 'POST',
         body: JSON.stringify(data),
         headers:{
             'Content-Type': 'application/json'
@@ -79,6 +76,7 @@ class Dashboard extends React.Component {
         console.log(error);
     });
     let result = await respuesta.json();
+    console.log(result)
     let alumnos=[];
     result[0].forEach(envio => {
       if(alumnos.filter(alumno=>alumno==envio.alumno).length==0){
@@ -93,7 +91,7 @@ class Dashboard extends React.Component {
     }
     this.setState({envios:result[0], revisados:result[1],
       activos: alumnos, totalrevisados:totalrevisados});
-  } 
+  }
 
   enviarVista = async (objectid, valor) =>{
     const data = {
@@ -102,7 +100,7 @@ class Dashboard extends React.Component {
     };
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/guardarVista';
     let respuesta = await fetch(url, {
-        method: 'POST', 
+        method: 'POST',
         body: JSON.stringify(data),
         headers:{
             'Content-Type': 'application/json'
@@ -115,7 +113,6 @@ class Dashboard extends React.Component {
     let result = await respuesta.json();
   }
 
-  
   enviarObs = async (objectid, obs) =>{
     const data = {
       id:objectid,
@@ -123,7 +120,7 @@ class Dashboard extends React.Component {
     };
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/guardarObs';
     let respuesta = await fetch(url, {
-        method: 'POST', 
+        method: 'POST',
         body: JSON.stringify(data),
         headers:{
             'Content-Type': 'application/json'
@@ -154,8 +151,8 @@ class Dashboard extends React.Component {
           >
             <Row>
               <Col md={4}>
-              <Button className="btn-round" 
-                color="warning" 
+              <Button className="btn-round"
+                color="warning"
                 outline
                 onClick={()=>this.enviarVista(tarea,"1")}
               >
@@ -163,8 +160,8 @@ class Dashboard extends React.Component {
               </Button>
             </Col>
             <Col md={4}>
-              <Button className="btn-round" 
-                color="info" 
+              <Button className="btn-round"
+                color="info"
                 outline
                 onClick={()=>this.enviarVista(tarea,"2")}
               >
@@ -172,8 +169,8 @@ class Dashboard extends React.Component {
               </Button>
             </Col>
             <Col md={4}>
-              <Button className="btn-round" 
-                color="success" 
+              <Button className="btn-round"
+                color="success"
                 outline
                 onClick={()=>this.enviarVista(tarea,"3")}
               >
@@ -182,8 +179,6 @@ class Dashboard extends React.Component {
             </Col>
           </Row>
         </ReactBSAlert>
-          
-       
       ),
     });
   }
@@ -203,7 +198,7 @@ class Dashboard extends React.Component {
           >
             <FormGroup>
               <Input placeholder=""
-                type="text" 
+                type="text"
                 value={this.state.obs}
                 onChange={(texto) =>
                     this.setState({ obs:texto.target.value })
@@ -211,14 +206,10 @@ class Dashboard extends React.Component {
                 />
             </FormGroup>
         </ReactBSAlert>
-          
-       
       )
     });
   }
-  
   render() {
-
     return (
       <>
         <div className="content">
@@ -245,7 +236,6 @@ class Dashboard extends React.Component {
                   <hr />
                   <div className="stats">
                     <i className="fa fa-refresh" />
-                    
                   </div>
                 </CardFooter>
               </Card>
@@ -272,7 +262,6 @@ class Dashboard extends React.Component {
                   <hr />
                   <div className="stats">
                     <i className="fa fa-calendar-o" />
-                    
                   </div>
                 </CardFooter>
               </Card>
@@ -332,7 +321,6 @@ class Dashboard extends React.Component {
               </Card>
             </Col>
           </Row>
-          
           <Row>
             {this.state.modal}
             <Col md="12">
@@ -371,7 +359,6 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      
                                       <Button className="btn-round" 
                                         color="primary" 
                                         outline
@@ -387,7 +374,6 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      
                                       <Button className="btn-round" 
                                         color="danger" 
                                         outline
@@ -424,7 +410,6 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      
                                       <Button className="btn-round" 
                                         color="warning" 
                                         outline
@@ -480,7 +465,6 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      
                                       <Button className="btn-round" 
                                         color="primary" 
                                         outline
@@ -496,7 +480,6 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      
                                       <Button className="btn-round" 
                                         color="danger" 
                                         outline
@@ -533,7 +516,6 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      
                                       <Button className="btn-round" 
                                         color="warning" 
                                         outline

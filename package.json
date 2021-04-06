@@ -14,7 +14,6 @@
     "minify-sass": "node-sass src/assets/scss/paper-dashboard.scss src/assets/css/paper-dashboard.min.css --output-style compressed",
     "map-sass": "node-sass src/assets/scss/paper-dashboard.scss src/assets/css/paper-dashboard.css --source-map true"
   },
-  
   "keywords": [
     "tareas",
     "micolegio",
@@ -23,12 +22,12 @@
     "alumnos",
     "aprendizaje"
   ],
-  
   "homepage": "http://a.micole.red/",
   "dependencies": {
     "bootstrap": "4.5.0",
     "chart.js": "2.9.3",
     "classnames": "2.2.6",
+    "firebase": "^8.2.10",
     "history": "4.10.1",
     "match-sorter": "4.1.0",
     "moment": "2.26.0",
@@ -44,6 +43,7 @@
     "react-chartjs-2": "2.9.0",
     "react-datetime": "2.16.3",
     "react-dom": "16.13.1",
+    "react-firebase-hooks": "^3.0.1",
     "react-google-maps": "9.4.5",
     "react-jvectormap": "0.0.16",
     "react-notification-alert": "0.0.12",

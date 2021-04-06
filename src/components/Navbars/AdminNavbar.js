@@ -1,6 +1,8 @@
 
 import React from "react";
 import classnames from "classnames";
+import { Link } from "react-router-dom";
+
 import {
   Button,
   Collapse,
@@ -113,101 +115,13 @@ class AdminNavbar extends React.Component {
                 <span className="d-block d-md-none">Lado Master</span>
               </NavbarBrand>
             </div>
-            <button
-              aria-controls="navigation-index"
-              aria-expanded={this.state.collapseOpen}
-              aria-label="Toggle navigation"
-              className="navbar-toggler"
-              // data-target="#navigation"
-              data-toggle="collapse"
-              type="button"
-              onClick={this.toggleCollapse}
-            >
-              <span className="navbar-toggler-bar navbar-kebab" />
-              <span className="navbar-toggler-bar navbar-kebab" />
-              <span className="navbar-toggler-bar navbar-kebab" />
-            </button>
-            <Collapse
+            {/* <Collapse
               className="justify-content-end"
               navbar
               isOpen={this.state.collapseOpen}
             >
-              <Form>
-                <InputGroup className="no-border">
-                  <Input defaultValue="" placeholder="Search..." type="text" />
-                  <InputGroupAddon addonType="append">
-                    <InputGroupText>
-                      <i className="nc-icon nc-zoom-split" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                </InputGroup>
-              </Form>
-              <Nav navbar>
-                <NavItem>
-                  <NavLink
-                    className="btn-magnify"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-layout-11" />
-                    <p>
-                      <span className="d-lg-none d-md-block">Stats</span>
-                    </p>
-                  </NavLink>
-                </NavItem>
-                <UncontrolledDropdown className="btn-rotate" nav>
-                  <DropdownToggle
-                    aria-haspopup={true}
-                    caret
-                    color="default"
-                    data-toggle="dropdown"
-                    id="navbarDropdownMenuLink"
-                    nav
-                  >
-                    <i className="nc-icon nc-bell-55" />
-                    <p>
-                      <span className="d-lg-none d-md-block">Some Actions</span>
-                    </p>
-                  </DropdownToggle>
-                  <DropdownMenu
-                    persist
-                    aria-labelledby="navbarDropdownMenuLink"
-                    right
-                  >
-                    <DropdownItem
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      Action
-                    </DropdownItem>
-                    <DropdownItem
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      Another action
-                    </DropdownItem>
-                    <DropdownItem
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      Something else here
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-                <NavItem>
-                  <NavLink
-                    className="btn-rotate"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-settings-gear-65" />
-                    <p>
-                      <span className="d-lg-none d-md-block">Account</span>
-                    </p>
-                  </NavLink>
-                </NavItem>
-              </Nav>
-            </Collapse>
+              <Link to="/chat" color="info">Entra en el Chat</Link>
+            </Collapse> */}
           </Container>
         </Navbar>
       </>

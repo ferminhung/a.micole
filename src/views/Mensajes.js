@@ -14,7 +14,7 @@ import {
   Label,
   FormGroup,
   Input,
-  Alert, 
+  Alert,
   Table,
   Row,
   Col,
@@ -35,13 +35,8 @@ class Mensajes extends React.Component {
     super();
     this.state = {
       singleSelect: null,
-      tareas: [],
       subiendo: null,
-      materias:null,
       seccion:null,
-      asignatura:null,
-      file: null,
-      imagePreviewUrl: defaultImage,
       titulo:null,
       fecha:null,
       Grado:[],
@@ -53,44 +48,19 @@ class Mensajes extends React.Component {
       curriculo:null,
       acepta:"*",
       parabuscar:null,
+      subirRecurso:null,
+      mensaje:null,
+      mensajes:[],
     };
-    this.handleImageChange = this.handleImageChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
-  handleImageChange(e) {
-    e.preventDefault();
-    const file = e.target.files[0];
-    if(file.size<5000000){
-      let doc = new FileReader();
-      doc.onloadend = () => {
-        this.setState({
-          file: file,
-          imagePreviewUrl: doc.result,
-        });
-      };
-      doc.readAsDataURL(file);
-    }else{
-      let subiendo = (
-        <Alert color="info">
-          <span>Recurso invalido</span>
-        </Alert>
-      );
-      this.setState({subirRecurso:false, mensaje:null,
-        file:null, imagePreviewUrl:null, subiendo:subiendo,
-      });
-      alert("Solo se aceptan documentos menores a 5mb ");
-    }
-  }
 
   handleSubmit(e) {
     e.preventDefault();
-    // this.state.file is the file/image uploaded
-    // in this function you can save the image (this.state.file) on form submit
-    // you have to call it yourself
   }
-  handleClick() {
+  handleClick(e) {
     this.refs.fileInput.click();
   }
   handleRemove() {
@@ -108,20 +78,22 @@ class Mensajes extends React.Component {
       this.setState({materias:this.props.Primaria})
     }
   }
-
   setSeccion = (value) => {
     this.setState({ seccion: value })
   }
 
-  setModulos = (value)  => {
-    this.setState({ modulo: value })
+  componentDidMount = async () => {
+    this.props.verCredenciales();
+    if(!this.props.colegio.id){
+      this.props.history.push("/auth/login");
+    }
+    await this.verMensaje(this.props.colegio.codigo,"*");
   }
 
-  verTareas = async (id,grado) => {
-    /* let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/verRecursos?id='
-      +id+"&grado="+grado;
+  verMensaje = async (codigo) => {
+    let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/micolegio/incoming_webhook/leerMensajes?codigo='+codigo;
     let respuesta = await fetch(url, {
-        method: 'GET', 
+        method: 'GET',
         mode: 'cors',
         cache: 'default',
         headers:{
@@ -131,197 +103,53 @@ class Mensajes extends React.Component {
     }).catch(error => {
         console.log(error);
     });
-    let tareas = await respuesta.json();
-    this.setState({ tareas:tareas}); */
+    let mensajes = await respuesta.json();
+    this.setState({ mensajes:mensajes});
+    // console.log(mensajes)
+    // console.log(codigo)
   }
 
-  async verModulos(){
-    let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/vermodulos';
-    let respuesta = await fetch(url, {
-      method: 'GET', 
-      mode: 'cors',
-      cache: 'default',
-      headers:{
-          'Content-Type': 'application/json'
-      },
-      Accept: 'application/json',
-    }).catch(error => {
-        console.log(error);
-    });
-    let modulos = await respuesta.json();
-    
-    this.setState({ modulos:modulos});
-  }
-
- 
-
-  componentDidMount = async () => {
-    this.props.verCredenciales();
-    if(!this.props.colegio.id){
-      this.props.history.push("/auth/login");
-    }
-    await this.verTareas(this.props.colegio.id,"*");
-  }
-
-  quitarTarea = async (id) => {
-    const datadir = {
-      codigo:id,
+  enviarMensaje = async () =>{
+    const data = {
+      plantel:this.props.colegio.codigo,
+      grado: this.state.singleSelect,
+      seccion:this.state.seccion.value,
+      // fecha:this.state.fecha,
+      mensaje:this.state.mensaje,
     };
-    let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/quitarRecurso';
-    fetch(url, {
-        method: 'POST', 
-        body: JSON.stringify(datadir),
+    let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/registrarMensaje';
+    let respuesta = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
         headers:{
             'Content-Type': 'application/json'
         },
         Accept: 'application/json',
     })
-    .then(async resp  => {
-        await this.verTareas(this.props.colegio.id);
-    })
     .catch(error => {
         console.log(error);
     });
-  }
-
-  ponerModal = () => {
-    const inputValue = this.state.alert;
     this.setState({
-      modal: (
-        <ReactBSAlert
-        custom
-        showCancel
-        showCloseButton
-        confirmBtnText="Modificar"
-        cancelBtnText="Salir"
-        confirmBtnBsStyle="primary"
-        cancelBtnBsStyle="light"
-        customIcon="https://raw.githubusercontent.com/djorg83/react-bootstrap-sweetalert/master/demo/assets/thumbs-up.jpg"
-        title="Cambios en la Actividad?"
-        onConfirm={this.onConfirm}
-        onCancel={()=>this.setState({modal:null})}
-          >
-          <Form className="form-horizontal">
-            <Row>
-              <Label md="3">Vencimiento</Label>
-                <Col md="6">
-                  <ReactDatetime
-                    inputProps={{
-                      className: "form-control",
-                      placeholder: "dd-mm-aaaa",
-                    }}
-                    timeFormat={false}
-                    value={this.state.fecha}
-                    onChange={(value) =>
-                      this.setState({ fecha: value })
-                    }
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Label md="3">Grado o año</Label>
-                <Col md="6">
-                  <Select
-                    className="react-select primary"
-                    classNamePrefix="react-select"
-                    name="singleSelect"
-                    value={this.state.singleSelect}
-                    onChange={(value) =>
-                      this.setGrado(value )
-                    }
-                    options={this.props.Grado}
-                    placeholder="Seleccion el Grado o año"
-                  />
-                  </Col>
-                  <Col md="3">
-                  <Select
-                    className="react-select primary"
-                    classNamePrefix="react-select"
-                    name="seccion"
-                    value={this.state.seccion}
-                    onChange={(value) =>
-                      this.setSeccion(value )
-                    }
-                    options={this.props.Seccion}
-                    placeholder="Seccion"
-                  />
-                  </Col>
-              </Row>
-              <Row>
-                <Label md="3">Titulo tarea</Label>
-                <Col md="9">
-                  <FormGroup>
-                    <Input placeholder="Nombre descriptivo de la tarea"
-                      type="text" 
-                      value={this.state.titulo}
-                      onChange={(texto) =>
-                          this.setState({ titulo:texto.target.value })
-                        }
-                      />
-                  </FormGroup>
-                </Col>
-              </Row>
-              <Row>
-                <Label md="3">Asignatura</Label>
-                <Col md="9">
-                  <Select
-                    className="react-select primary"
-                    classNamePrefix="react-select"
-                    name="singleSelect"
-                    value={this.state.asignatura}
-                    onChange={(value) =>
-                      this.setState({ asignatura: value })
-                    }
-                    options={this.state.materias}
-                    placeholder="Selecciona el Area o Asignatura"
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Label md="3">Item Curriculo</Label>
-                <Col md="9">
-                  <Select
-                    className="react-select primary"
-                    classNamePrefix="react-select"
-                    name="singleSelect"
-                    value={this.state.curriculo}
-                    onChange={(value) =>
-                      this.setState({ curriculo: value })
-                    }
-                    options={this.state.itemscurriculo}
-                    placeholder="Selecciona el Item o Bloque"
-                  />
-                </Col>
-              </Row>
-            </Form>
-            <Row>.</Row>
-            <Row>.</Row>
-            <Row>.</Row>
-            <Row>.</Row>
-        </ReactBSAlert>
-          
-       
-      ),
+      asignatura:null,
+      singleSelect:null,
     });
+      await this.verMensaje(this.props.colegio.codigo);
+    let result = await respuesta.json(data);
+    // console.log(result)
+    // console.log(data)
   }
-
-  filtrar=(grado)=>{
-    alert(grado);
-  }
-  
   render() {
     return (
       <>
         <div className="content">
           <Row>
-          {this.state.modal}
-          <Col md="6" lg="6">
+            <Col md="6" lg="6">
               <Card>
                 <CardHeader>
                   <CardTitle tag="h4">Registro de Mensajes</CardTitle>
                 </CardHeader>
                 <CardBody>
-                  <Form className="form-horizontal">
+                  <Form className="form-horizontal" >
                     <Row>
                       <Label md="3">Grado o año</Label>
                       <Col md="6">
@@ -336,8 +164,8 @@ class Mensajes extends React.Component {
                           options={this.props.Grado}
                           placeholder="Seleccion el Grado o año"
                         />
-                        </Col>
-                        <Col md="3">
+                      </Col>
+                      <Col md="3">
                         <Select
                           className="react-select primary"
                           classNamePrefix="react-select"
@@ -349,53 +177,138 @@ class Mensajes extends React.Component {
                           options={this.props.Seccion}
                           placeholder="Seccion"
                         />
-                        </Col>
-                    </Row>
-                    <Row>
-                      <Label md="3">Titulo del Mensaje</Label>
-                      <Col md="9">
-                        <FormGroup>
-                          <Input placeholder="Asunto del mensaje"
-                            type="text" 
-                            value={this.state.titulo}
-                            onChange={(texto) =>
-                                this.setState({ titulo:texto.target.value })
-                              }
-                           />
-                        </FormGroup>
                       </Col>
                     </Row>
+                    {/* <Row>
+                      <Label md="3">Vencimiento</Label>
+                      <Col md="6">
+                        <ReactDatetime
+                          inputProps={{
+                            className: "form-control",
+                            placeholder: "Date Picker Here",
+                          }}
+                          timeFormat={false}
+                          value={this.state.fecha}
+                          onChange={(value) =>
+                            this.setState({ fecha: value })
+                          }
+                        />
+                      </Col>
+                    </Row> */}
                     <Row>
                       <Label md="3">Contenido del Mensaje</Label>
                       <Col md="9">
                         <FormGroup>
-                          <Input 
-                            type="text" 
-                            value={this.state.titulo}
+                          <Input placeholder="Asunto del mensaje"
+                            type="text"
+                            value={this.state.mensaje}
                             onChange={(texto) =>
-                                this.setState({ titulo:texto.target.value })
-                              }
-                           />
+                              this.setState({ mensaje:texto.target.value })
+                            }
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
                   </Form>
                 </CardBody>
                 <CardFooter>
-                  <Row>
-                    <Col md="9">
-                      <Button className="btn-round" 
-                      color="info" type="submit"
-                      onClick={()=>this.uploadFile()}
-                    >
-                        Registrar Mensaje 
-                      </Button>
-                    </Col>
-                  </Row>
-                </CardFooter>
+                  {this.state.mensaje ? (
+                    <Row>
+                      <Col md="3" />
+                      <Col md="9">
+                        <Button className="btn-round"
+                        color="info" type="button"
+                        onClick={()=>this.enviarMensaje()}
+                      >
+                          Registrar mensaje
+                        </Button>
+                      </Col>
+                    </Row>
+                    ):(null)}
+                  </CardFooter>
               </Card>
+              {/* <Card className="card-timeline card-plain">
+                <CardBody>
+                  <ul className="timeline timeline-simple">
+                  {this.state.mensajes.map(mensaje=>(
+                    <li className="timeline-inverted">
+                      <div className="timeline-badge danger">
+                        <i className="nc-icon nc-single-copy-04" />
+                      </div>
+                      <div className="timeline-panel">
+                        <div className="timeline-heading">
+                          <Badge color="danger" pill>
+                          {mensaje.grado.label} {mensaje.seccion}
+                          </Badge>
+                        </div>
+                        <h6>
+                          <i className="ti-time" />
+                          {mensaje.fecha} ({mensaje.hora})
+                        </h6>
+                      </div>
+                    </li>
+                  ))}
+                  </ul>
+                </CardBody>
+              </Card> */}
             </Col>
             <Col md="6" lg="6">
+                <Card className="card-tasks">
+                  <CardHeader>
+                    <Row>
+                      <Col md="12">
+                        <CardTitle tag="h4">
+                          Mensajes Enviados
+                        </CardTitle>
+                      </Col>
+                      {/* <Col md="6">
+                        <Select
+                          className="react-select primary"
+                          classNamePrefix="react-select"
+                          name="singleSelect"
+                          value={this.state.parabuscar}
+                          onChange={(value) =>
+                            this.verMensaje(this.props.colegio.codigo,value.key)
+                          }
+                          options={this.props.Grado}
+                          placeholder="Seleccion el Grado o año"
+                        />
+                      </Col> */}
+                    </Row>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="table-full-width table-responsive">
+                      <Table>
+                        <tbody>
+                          {this.state.mensajes.map(mensaje=>(
+                            <tr>
+                              <td >
+                                <div className="timeline-badge danger">
+                                  <i className="nc-icon nc-single-copy-04" />
+                                </div>
+                              </td>
+                              <td className="text-left">
+                                {mensaje.grado.label} {mensaje.seccion}
+                              </td>
+                              <td className="text-left">
+                                {mensaje.titulo} {mensaje.mensaje}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="fa fa-refresh spin" />
+                      Updated 3 minutes ago
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Col>
+            {/* <Col md="6" lg="6">
               <Card>
                 <CardHeader>
                   <CardText tag="div">
@@ -413,137 +326,11 @@ class Mensajes extends React.Component {
                       </tr>
                     </thead>
                     <tbody>
-                      
                     </tbody>
                   </Table>
                 </CardBody>
               </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="text-center" lg="6" md="6">
-              <Row>
-              <Col className="text-center" lg="12" md="12">  
-              <Card className="card-tasks">
-                <CardHeader>
-                  <Row>
-                  <Col md="6">
-                    <CardTitle tag="h4">
-                      Mensajes Enviados
-                    </CardTitle>
-                  </Col>
-                  <Col md="6">
-                    <Select
-                      className="react-select primary"
-                      classNamePrefix="react-select"
-                      name="singleSelect" 
-                      value={this.state.parabuscar}
-                      onChange={(value) =>
-                        this.verTareas(this.props.colegio.id,value.key)
-                      }
-                      options={this.props.Grado}
-                      placeholder="Seleccion el Grado o año"
-                    />
-                  </Col>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  <div className="table-full-width table-responsive">
-                    <Table>
-                      <tbody>
-                        {this.state.tareas.map(tarea=>( 
-                          <tr>
-                            <td >
-                              <div className="timeline-badge danger">
-                                <i className="nc-icon nc-single-copy-04" />
-                              </div>
-                            </td>
-                            <td className="text-left">
-                              {tarea.grado} {tarea.seccion}
-                            </td>
-                            <td className="text-left">
-                              {tarea.materia} {tarea.titulo}
-                            </td>
-                            <td className="text-left">
-                              {tarea.fecha} ({tarea.hora})
-                            </td>
-                            <td className="td-actions text-right">
-                              <Button
-                                className="btn-round btn-icon btn-icon-mini btn-neutral"
-                                color="info"
-                                title=""
-                                type="button"
-                                onClick={()=>this.ponerModal(tarea._id)}
-                              >
-                                <i className="nc-icon nc-ruler-pencil" />
-                              </Button>
-                             
-                              <Button
-                                className="btn-round btn-icon btn-icon-mini btn-neutral"
-                                color="danger"
-                                title=""
-                                type="button"
-                                onClick={()=>this.quitarTarea(tarea._id)}
-                              >
-                                <i className="nc-icon nc-simple-remove" />
-                              </Button>
-                              
-                            </td>
-                          </tr>
-                        ))}
-                        
-                        
-                      </tbody>
-                    </Table>
-                  </div>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="fa fa-refresh spin" />
-                    Updated 3 minutes ago
-                  </div>
-                </CardFooter>
-              </Card>
-              
-            </Col>
-            
-            </Row>
-            </Col>
-            <Col md="6">
-              <Card className="card-timeline card-plain">
-                <CardBody>
-                  <ul className="timeline timeline-simple">
-                  {this.state.tareas.map(tarea=>( 
-                    <li className="timeline-inverted">
-                      <div className="timeline-badge danger">
-                        <i className="nc-icon nc-single-copy-04" />
-                      </div>
-                      <div className="timeline-panel">
-                        <div className="timeline-heading">
-                          <Badge color="danger" pill>
-                            {tarea.materia}
-                          </Badge>
-                        </div>
-                        <div className="timeline-body">
-                          <p>
-                            {tarea.grado} {tarea.seccion}
-                          </p>
-                        </div>
-                        <h6>
-                          <i className="ti-time" />
-                          {tarea.fecha} / {tarea.hora} 
-                        </h6>
-                      </div>
-                    </li>
-                  ))}
-                  </ul>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            
+            </Col> */}
           </Row>
         </div>
       </>

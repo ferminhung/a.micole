@@ -13,22 +13,11 @@ class Footer extends React.Component {
         <Container fluid={this.props.fluid ? true : false}>
           <Row>
             <nav className="footer-nav">
-              <ul>
-                <li>
-                  <a href="https://www.micolegio.com">Micolegio</a>
-                </li>
-                <li>
-                  <a href="https://blog.micolegio.com">Blog</a>
-                </li>
-                
-              </ul>
-            </nav>
-            <div className="credits ml-auto">
               <span className="copyright">
                 &copy; {1900 + new Date().getYear()}, made with{" "}
                 <i className="fa fa-heart heart" /> by Micolegio 
               </span>
-            </div>
+            </nav>
           </Row>
         </Container>
       </footer>

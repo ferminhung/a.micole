@@ -1,4 +1,3 @@
-
 import React from "react";
 
 // reactstrap components
@@ -14,7 +13,7 @@ import {
   Label,
   FormGroup,
   Input,
-  Alert, 
+  Alert,
   Table,
   Row,
   Col,
@@ -65,7 +64,7 @@ class Widgets extends React.Component {
     const rand = min + Math.random() * (max - min);
     e.preventDefault();
     const fileUnchange = e.target.files[0];
-    const file = new File([fileUnchange], 
+    const file = new File([fileUnchange],
       String(rand)+fileUnchange.name, { type: fileUnchange.type, lastModified: Date.now()});
     if(file.size<4000000){
       let doc = new FileReader();
@@ -91,9 +90,6 @@ class Widgets extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // this.state.file is the file/image uploaded
-    // in this function you can save the image (this.state.file) on form submit
-    // you have to call it yourself
   }
   handleClick() {
     this.refs.fileInput.click();
@@ -126,7 +122,7 @@ class Widgets extends React.Component {
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/verRecursos?id='
       +id+"&grado="+grado;
     let respuesta = await fetch(url, {
-        method: 'GET', 
+        method: 'GET',
         mode: 'cors',
         cache: 'default',
         headers:{
@@ -138,12 +134,13 @@ class Widgets extends React.Component {
     });
     let tareas = await respuesta.json();
     this.setState({ tareas:tareas});
+    // console.log(tareas)
   }
 
   async verModulos(){
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/vermodulos';
     let respuesta = await fetch(url, {
-      method: 'GET', 
+      method: 'GET',
       mode: 'cors',
       cache: 'default',
       headers:{
@@ -154,12 +151,10 @@ class Widgets extends React.Component {
         console.log(error);
     });
     let modulos = await respuesta.json();
-    
     this.setState({ modulos:modulos});
   }
 
   async uploadFile() {
-    
     let file = this.state.file;
     let codColegio = this.props.colegio.codigo;
     if (file) {
@@ -173,15 +168,15 @@ class Widgets extends React.Component {
             bucketName: 'pruebareact',
             dirName: 'aprende/'+codColegio,
             region: 'us-east-1',
-            accessKeyId: this.props.as3, 
-            secretAccessKey: this.props.ss3, 
+            accessKeyId: this.props.as3,
+            secretAccessKey: this.props.ss3,
         })
         .then(data => {
             const datadir = {
                 direccion:data.location,
                 plantel:this.props.colegio.codigo,
-                materia: this.state.asignatura, 
-                grado: this.state.singleSelect, 
+                materia: this.state.asignatura,
+                grado: this.state.singleSelect,
                 seccion:this.state.seccion.value,
                 titulo:this.state.titulo,
                 fecha:this.state.fecha,
@@ -190,7 +185,7 @@ class Widgets extends React.Component {
             };
             let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/guardarRecurso';
             fetch(url, {
-                method: 'POST', 
+                method: 'POST',
                 body: JSON.stringify(datadir),
                 headers:{
                     'Content-Type': 'application/json'
@@ -203,7 +198,7 @@ class Widgets extends React.Component {
                     <span>Recurso en la nube</span>
                   </Alert>
                 )
-                this.setState({subiendo:nube, 
+                this.setState({subiendo:nube,
                 asignatura:null, singleSelect:null});
                 await this.verTareas(this.props.colegio.id);
             })
@@ -229,7 +224,7 @@ class Widgets extends React.Component {
     };
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/quitarRecurso';
     fetch(url, {
-        method: 'POST', 
+        method: 'POST',
         body: JSON.stringify(datadir),
         headers:{
             'Content-Type': 'application/json'
@@ -249,18 +244,18 @@ class Widgets extends React.Component {
     this.setState({
       modal: (
         <ReactBSAlert
-        custom
-        showCancel
-        showCloseButton
-        confirmBtnText="Modificar"
-        cancelBtnText="Salir"
-        confirmBtnBsStyle="primary"
-        cancelBtnBsStyle="light"
-        customIcon="https://raw.githubusercontent.com/djorg83/react-bootstrap-sweetalert/master/demo/assets/thumbs-up.jpg"
-        title="Cambios en la Actividad?"
-        onConfirm={this.onConfirm}
-        onCancel={()=>this.setState({modal:null})}
-          >
+          custom
+          showCancel
+          showCloseButton
+          confirmBtnText="Modificar"
+          cancelBtnText="Salir"
+          confirmBtnBsStyle="primary"
+          cancelBtnBsStyle="light"
+          customIcon="https://raw.githubusercontent.com/djorg83/react-bootstrap-sweetalert/master/demo/assets/thumbs-up.jpg"
+          title="Cambios en la Actividad?"
+          onConfirm={this.onConfirm}
+          onCancel={()=>this.setState({modal:null})}
+        >
           <Form className="form-horizontal">
             <Row>
               <Label md="3">Vencimiento</Label>
@@ -312,7 +307,7 @@ class Widgets extends React.Component {
                 <Col md="9">
                   <FormGroup>
                     <Input placeholder="Nombre descriptivo de la tarea"
-                      type="text" 
+                      type="text"
                       value={this.state.titulo}
                       onChange={(texto) =>
                           this.setState({ titulo:texto.target.value })
@@ -359,8 +354,6 @@ class Widgets extends React.Component {
             <Row>.</Row>
             <Row>.</Row>
         </ReactBSAlert>
-          
-       
       ),
     });
   }
@@ -368,14 +361,14 @@ class Widgets extends React.Component {
   filtrar=(grado)=>{
     alert(grado);
   }
-  
+
   render() {
     return (
       <>
         <div className="content">
           <Row>
           {this.state.modal}
-          <Col md="6" lg="6">
+            <Col md="6" lg="6" justify="center">
               <Card>
                 <CardHeader>
                   <CardTitle tag="h4">Registro de Tareas</CardTitle>
@@ -396,8 +389,8 @@ class Widgets extends React.Component {
                           options={this.props.Grado}
                           placeholder="Seleccion el Grado o año"
                         />
-                        </Col>
-                        <Col md="3">
+                      </Col>
+                      <Col md="3">
                         <Select
                           className="react-select primary"
                           classNamePrefix="react-select"
@@ -409,19 +402,19 @@ class Widgets extends React.Component {
                           options={this.props.Seccion}
                           placeholder="Seccion"
                         />
-                        </Col>
+                      </Col>
                     </Row>
                     <Row>
                       <Label md="3">Titulo tarea</Label>
                       <Col md="9">
                         <FormGroup>
                           <Input placeholder="Nombre descriptivo de la tarea"
-                            type="text" 
+                            type="text"
                             value={this.state.titulo}
                             onChange={(texto) =>
                                 this.setState({ titulo:texto.target.value })
                               }
-                           />
+                          />
                         </FormGroup>
                       </Col>
                     </Row>
@@ -458,7 +451,7 @@ class Widgets extends React.Component {
                       </Col>
                     </Row>
                     <Row>
-                    <Label md="3">Vencimiento</Label>
+                      <Label md="3">Vencimiento</Label>
                       <Col md="6">
                         <ReactDatetime
                           inputProps={{
@@ -474,24 +467,23 @@ class Widgets extends React.Component {
                       </Col>
                     </Row>
                     <Row>
-                    <Label md="3">Recurso</Label>
+                      <Label md="3">Recurso</Label>
                       <Col md="9">
                         <FormGroup>
                           <div className="fileinput text-center">
-                            <input type="file" 
+                            <input type="file"
                               accept="*"
-                              onChange={this.handleImageChange} 
-                              ref="fileInput" 
+                              onChange={this.handleImageChange}
+                              ref="fileInput"
                             />
                             <div>
                               {this.state.file === null ? (
                                 <Button className="btn-round" onClick={() => this.handleClick()}>
                                   {this.props.avatar ? "Add Photo" : "Selecciona el archivo"}
                                 </Button>
-                                
                               ) : (
                                 <span>
-                                  <Button className="btn-round" 
+                                  <Button className="btn-round"
                                     onClick={() => this.handleClick()}
                                   >
                                     Modificar
@@ -520,11 +512,11 @@ class Widgets extends React.Component {
                     <Col md="3" />
                     {this.state.file !== null ? (
                     <Col md="9">
-                      <Button className="btn-round" 
+                      <Button className="btn-round"
                       color="info" type="submit"
                       onClick={()=>this.uploadFile()}
                     >
-                        Subir y registrar tarea 
+                        Subir y registrar tarea
                       </Button>
                     </Col> ) : (null)}
                   </Row>
@@ -552,7 +544,6 @@ class Widgets extends React.Component {
                       </tr>
                     </thead>
                     <tbody>
-                      
                     </tbody>
                   </Table>
                 </CardBody>
@@ -560,155 +551,115 @@ class Widgets extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col className="text-center" lg="6" md="6">
+            <Col className="text-center" lg="12" md="12">
               <Row>
-              <Col className="text-center" lg="12" md="12">  
-              <Card className="card-tasks">
-                <CardHeader>
-                  <Row>
-                  <Col md="6">
-                    <CardTitle tag="h4">
-                      Tareas Activas
-                    </CardTitle>
-                  </Col>
-                  <Col md="6">
-                    <Select
-                      className="react-select primary"
-                      classNamePrefix="react-select"
-                      name="singleSelect" 
-                      value={this.state.parabuscar}
-                      onChange={(value) =>
-                        this.verTareas(this.props.colegio.id,value.key)
-                      }
-                      options={this.props.Grado}
-                      placeholder="Seleccion el Grado o año"
-                    />
-                  </Col>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  <div className="table-full-width table-responsive">
-                    <Table>
-                      <tbody>
-                        {this.state.tareas.map(tarea=>( 
+                <Col className="text-center" lg="12" md="12">
+                  <Card className="card-tasks">
+                    <CardHeader>
+                      <Row>
+                        <Col md="6">
+                          <CardTitle tag="h4">
+                            Tareas Activas
+                          </CardTitle>
+                        </Col>
+                        <Col md="6">
+                          <Select
+                            className="react-select primary"
+                            classNamePrefix="react-select"
+                            name="singleSelect"
+                            value={this.state.parabuscar}
+                            onChange={(value) =>
+                              this.verTareas(this.props.colegio.id,value.key)
+                            }
+                            options={this.props.Grado}
+                            placeholder="Seleccion el Grado o año"
+                          />
+                        </Col>
+                      </Row>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="table-full-width table-responsive">
+                        <Table>
+                          <tbody>
+                            {this.state.tareas.map(tarea=>(
+                              <tr>
+                                <td >
+                                  <div className="timeline-badge danger">
+                                    <i className="nc-icon nc-single-copy-04" />
+                                  </div>
+                                </td>
+                                <td className="text-left">
+                                  {tarea.grado} {tarea.seccion}
+                                </td>
+                                <td className="text-left">
+                                  {tarea.materia} {tarea.titulo}
+                                </td>
+                                <td className="text-left">
+                                  {tarea.fecha} ({tarea.hora})
+                                </td>
+                                <td className="td-actions text-right">
+                                  <Button
+                                    className="btn-round btn-icon btn-icon-mini btn-neutral"
+                                    color="info"
+                                    title=""
+                                    type="button"
+                                    onClick={()=>this.ponerModal(tarea._id)}
+                                  >
+                                    <i className="nc-icon nc-ruler-pencil" />
+                                  </Button>
+                                  <Button
+                                    className="btn-round btn-icon btn-icon-mini btn-neutral"
+                                    color="danger"
+                                    title=""
+                                    type="button"
+                                    onClick={()=>this.quitarTarea(tarea._id)}
+                                  >
+                                    <i className="nc-icon nc-simple-remove" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </CardBody>
+                    <CardFooter>
+                      <hr />
+                      <div className="stats">
+                        <i className="fa fa-refresh spin" />
+                        Updated 3 minutes ago
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </Col>
+                <Col md="12" lg="12">
+                  <Card>
+                    <CardHeader>
+                      <CardText tag="div">
+                        <p className="card-category">
+                        <b>Tareas Inactivas</b>
+                        </p>
+                      </CardText>
+                    </CardHeader>
+                    <CardBody className="table-responsive">
+                      <Table className="table-hover">
+                        <thead className="text-warning">
                           <tr>
-                            <td >
-                              <div className="timeline-badge danger">
-                                <i className="nc-icon nc-single-copy-04" />
-                              </div>
-                            </td>
-                            <td className="text-left">
-                              {tarea.grado} {tarea.seccion}
-                            </td>
-                            <td className="text-left">
-                              {tarea.materia} {tarea.titulo}
-                            </td>
-                            <td className="text-left">
-                              {tarea.fecha} ({tarea.hora})
-                            </td>
-                            <td className="td-actions text-right">
-                              <Button
-                                className="btn-round btn-icon btn-icon-mini btn-neutral"
-                                color="info"
-                                title=""
-                                type="button"
-                                onClick={()=>this.ponerModal(tarea._id)}
-                              >
-                                <i className="nc-icon nc-ruler-pencil" />
-                              </Button>
-                             
-                              <Button
-                                className="btn-round btn-icon btn-icon-mini btn-neutral"
-                                color="danger"
-                                title=""
-                                type="button"
-                                onClick={()=>this.quitarTarea(tarea._id)}
-                              >
-                                <i className="nc-icon nc-simple-remove" />
-                              </Button>
-                              
-                            </td>
+                            <th>#</th>
+                            <th>Grado</th>
+                            <th>Area</th>
+                            <th>Fecha</th>
+                            <th></th>
                           </tr>
-                        ))}
-                        
-                        
-                      </tbody>
-                    </Table>
-                  </div>
-                </CardBody>
-                <CardFooter>
-                  <hr />
-                  <div className="stats">
-                    <i className="fa fa-refresh spin" />
-                    Updated 3 minutes ago
-                  </div>
-                </CardFooter>
-              </Card>
-              
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </Table>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
             </Col>
-            <Col md="12" lg="12">
-              <Card>
-                <CardHeader>
-                  <CardText tag="div">
-                    <p className="card-category">
-                    <b>Tareas Inactivas</b>
-                    </p>
-                  </CardText>
-                </CardHeader>
-                <CardBody className="table-responsive">
-                  <Table className="table-hover">
-                    <thead className="text-warning">
-                      <tr>
-                        <th>#</th>
-                        <th>Grado</th>
-                        <th>Area</th>
-                        <th>Fecha</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                    </tbody>
-                  </Table>
-                </CardBody>
-              </Card>
-            </Col>
-            </Row>
-            </Col>
-            <Col md="6">
-              <Card className="card-timeline card-plain">
-                <CardBody>
-                  <ul className="timeline timeline-simple">
-                  {this.state.tareas.map(tarea=>( 
-                    <li className="timeline-inverted">
-                      <div className="timeline-badge danger">
-                        <i className="nc-icon nc-single-copy-04" />
-                      </div>
-                      <div className="timeline-panel">
-                        <div className="timeline-heading">
-                          <Badge color="danger" pill>
-                            {tarea.materia}
-                          </Badge>
-                        </div>
-                        <div className="timeline-body">
-                          <p>
-                            {tarea.grado} {tarea.seccion}
-                          </p>
-                        </div>
-                        <h6>
-                          <i className="ti-time" />
-                          {tarea.fecha} / {tarea.hora} 
-                        </h6>
-                      </div>
-                    </li>
-                  ))}
-                  </ul>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            
           </Row>
         </div>
       </>

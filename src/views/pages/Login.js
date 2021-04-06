@@ -70,7 +70,8 @@ class Login extends React.Component {
                 <Card className="card-login">
                   <CardHeader>
                     <CardHeader>
-                      <h3 className="header text-center">Login</h3>
+                      <h5 className="header text-center">Micolegio Aprende</h5>
+                      <h3 className="header text-center">Registrate</h3>
                     </CardHeader>
                   </CardHeader>
                   <CardBody>
