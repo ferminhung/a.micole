@@ -28,15 +28,13 @@ import defaultAvatar from "assets/img/placeholder.jpg";
 import Select from "react-select";
 import * as mainActions from "../actions/mainActions";
 import { connect } from 'react-redux';
-import { uploadFile } from 'react-s3';
-
 class Mensajes extends React.Component {
   constructor() {
     super();
     this.state = {
       singleSelect: null,
       subiendo: null,
-      seccion:null,
+      seccion:"*",
       titulo:null,
       fecha:null,
       Grado:[],
@@ -80,6 +78,7 @@ class Mensajes extends React.Component {
   }
   setSeccion = (value) => {
     this.setState({ seccion: value })
+    console.log(value)
   }
 
   componentDidMount = async () => {
@@ -105,8 +104,8 @@ class Mensajes extends React.Component {
     });
     let mensajes = await respuesta.json();
     this.setState({ mensajes:mensajes});
-    // console.log(mensajes)
-    // console.log(codigo)
+    console.log(mensajes)
+    console.log(codigo)
   }
 
   enviarMensaje = async () =>{
@@ -114,7 +113,7 @@ class Mensajes extends React.Component {
       plantel:this.props.colegio.codigo,
       grado: this.state.singleSelect,
       seccion:this.state.seccion.value,
-      // fecha:this.state.fecha,
+      fecha: this.state.fecha,
       mensaje:this.state.mensaje,
     };
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/registrarMensaje';
@@ -130,14 +129,14 @@ class Mensajes extends React.Component {
         console.log(error);
     });
     this.setState({
-      asignatura:null,
+      // seccion:null,
       singleSelect:null,
     });
       await this.verMensaje(this.props.colegio.codigo);
-    let result = await respuesta.json(data);
-    // console.log(result)
-    // console.log(data)
+      let result = await respuesta.json(data);
+      console.log(result)
   }
+
   render() {
     return (
       <>
@@ -170,16 +169,30 @@ class Mensajes extends React.Component {
                           className="react-select primary"
                           classNamePrefix="react-select"
                           name="seccion"
-                          value={this.state.seccion}
+                          value={this.state.seccion.value}
                           onChange={(value) =>
-                            this.setSeccion(value )
+                            this.setSeccion(value)
                           }
                           options={this.props.Seccion}
                           placeholder="Seccion"
                         />
                       </Col>
                     </Row>
-                    {/* <Row>
+                    <Row>
+                      <Label md="3">Contenido del Mensaje</Label>
+                      <Col md="9">
+                        <FormGroup>
+                          <Input placeholder="Asunto del mensaje"
+                            type="text"
+                            value={this.state.mensaje}
+                            onChange={(texto) =>
+                              this.setState({ mensaje:texto.target.value })
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
                       <Label md="3">Vencimiento</Label>
                       <Col md="6">
                         <ReactDatetime
@@ -193,20 +206,6 @@ class Mensajes extends React.Component {
                             this.setState({ fecha: value })
                           }
                         />
-                      </Col>
-                    </Row> */}
-                    <Row>
-                      <Label md="3">Contenido del Mensaje</Label>
-                      <Col md="9">
-                        <FormGroup>
-                          <Input placeholder="Asunto del mensaje"
-                            type="text"
-                            value={this.state.mensaje}
-                            onChange={(texto) =>
-                              this.setState({ mensaje:texto.target.value })
-                            }
-                          />
-                        </FormGroup>
                       </Col>
                     </Row>
                   </Form>
@@ -227,30 +226,6 @@ class Mensajes extends React.Component {
                     ):(null)}
                   </CardFooter>
               </Card>
-              {/* <Card className="card-timeline card-plain">
-                <CardBody>
-                  <ul className="timeline timeline-simple">
-                  {this.state.mensajes.map(mensaje=>(
-                    <li className="timeline-inverted">
-                      <div className="timeline-badge danger">
-                        <i className="nc-icon nc-single-copy-04" />
-                      </div>
-                      <div className="timeline-panel">
-                        <div className="timeline-heading">
-                          <Badge color="danger" pill>
-                          {mensaje.grado.label} {mensaje.seccion}
-                          </Badge>
-                        </div>
-                        <h6>
-                          <i className="ti-time" />
-                          {mensaje.fecha} ({mensaje.hora})
-                        </h6>
-                      </div>
-                    </li>
-                  ))}
-                  </ul>
-                </CardBody>
-              </Card> */}
             </Col>
             <Col md="6" lg="6">
                 <Card className="card-tasks">
@@ -261,7 +236,7 @@ class Mensajes extends React.Component {
                           Mensajes Enviados
                         </CardTitle>
                       </Col>
-                      {/* <Col md="6">
+                      <Col md="6">
                         <Select
                           className="react-select primary"
                           classNamePrefix="react-select"
@@ -273,7 +248,7 @@ class Mensajes extends React.Component {
                           options={this.props.Grado}
                           placeholder="Seleccion el Grado o año"
                         />
-                      </Col> */}
+                      </Col>
                     </Row>
                   </CardHeader>
                   <CardBody>
@@ -281,20 +256,23 @@ class Mensajes extends React.Component {
                       <Table>
                         <tbody>
                           {this.state.mensajes.map(mensaje=>(
-                            <tr>
-                              <td >
-                                <div className="timeline-badge danger">
-                                  <i className="nc-icon nc-single-copy-04" />
-                                </div>
-                              </td>
-                              <td className="text-left">
-                                {mensaje.grado.label} {mensaje.seccion}
-                              </td>
-                              <td className="text-left">
-                                {mensaje.titulo} {mensaje.mensaje}
-                              </td>
-                            </tr>
-                          ))}
+                              <tr>
+                                <td >
+                                  <div className="timeline-badge danger">
+                                    <i className="nc-icon nc-single-copy-04" />
+                                  </div>
+                                </td>
+                                <td className="text-left">
+                                  {mensaje.grado.label} {mensaje.seccion}
+                                </td>
+                                <td className="text-left">
+                                  {mensaje.mensaje}
+                                </td>
+                                <td className="text-left">
+                                  {mensaje.fecha} ({mensaje.hora})
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </Table>
                     </div>

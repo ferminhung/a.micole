@@ -134,7 +134,6 @@ class Widgets extends React.Component {
     });
     let tareas = await respuesta.json();
     this.setState({ tareas:tareas});
-    // console.log(tareas)
   }
 
   async verModulos(){
@@ -154,61 +153,61 @@ class Widgets extends React.Component {
     this.setState({ modulos:modulos});
   }
 
-  async uploadFile() {
-    let file = this.state.file;
-    let codColegio = this.props.colegio.codigo;
-    if (file) {
-      let subiendo = (
-        <Alert color="info">
-          <span>Subiendo Recurso</span>
+async uploadFile() {
+  let file = this.state.file;
+  let codColegio = this.props.colegio.codigo;
+  if (file) {
+    let subiendo = (
+    <Alert color="info">
+      <span>Subiendo Recurso</span>
+    </Alert>
+  )
+  this.setState({subiendo:subiendo});
+  await  uploadFile(file, {
+    bucketName: 'pruebareact',
+    dirName: 'aprende/'+codColegio,
+    region: 'us-east-1',
+    accessKeyId: this.props.as3,
+    secretAccessKey: this.props.ss3,
+  })
+  .then(data => {
+    const datadir = {
+      direccion:data.location,
+      plantel:this.props.colegio.codigo,
+      materia: this.state.asignatura,
+      grado: this.state.singleSelect,
+      seccion:this.state.seccion.value,
+      titulo:this.state.titulo,
+      fecha:this.state.fecha,
+      size:this.state.file.size,
+      tipo:this.state.file.type,
+    };
+    let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/guardarRecurso';
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(datadir),
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      Accept: 'application/json',
+    })
+    .then(async resp  => {
+      let nube = (
+        <Alert color="success">
+          <span>Recurso en la nube</span>
         </Alert>
       )
-        this.setState({subiendo:subiendo});
-        await  uploadFile(file, {
-            bucketName: 'pruebareact',
-            dirName: 'aprende/'+codColegio,
-            region: 'us-east-1',
-            accessKeyId: this.props.as3,
-            secretAccessKey: this.props.ss3,
-        })
-        .then(data => {
-            const datadir = {
-                direccion:data.location,
-                plantel:this.props.colegio.codigo,
-                materia: this.state.asignatura,
-                grado: this.state.singleSelect,
-                seccion:this.state.seccion.value,
-                titulo:this.state.titulo,
-                fecha:this.state.fecha,
-                size:this.state.file.size,
-                tipo:this.state.file.type,
-            };
-            let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/guardarRecurso';
-            fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(datadir),
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                Accept: 'application/json',
-            })
-            .then(async resp  => {
-                let nube = (
-                  <Alert color="success">
-                    <span>Recurso en la nube</span>
-                  </Alert>
-                )
-                this.setState({subiendo:nube,
-                asignatura:null, singleSelect:null});
-                await this.verTareas(this.props.colegio.id);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        })
-        .catch(err => console.error(err));
-    }
+      this.setState({subiendo:nube,
+        asignatura:null, singleSelect:null});
+        await this.verTareas(this.props.colegio.id);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    })
+    .catch(err => console.error(err));
   }
+}
 
   componentDidMount = async () => {
     this.props.verCredenciales();
