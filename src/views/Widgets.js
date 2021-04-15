@@ -134,6 +134,7 @@ class Widgets extends React.Component {
     });
     let tareas = await respuesta.json();
     this.setState({ tareas:tareas});
+    console.log(tareas);
   }
 
   async verModulos(){

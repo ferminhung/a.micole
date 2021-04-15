@@ -1,6 +1,6 @@
 {
   "name": "micole-masterside",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Micolegio Lado del Docente",
   "main": "index.js",
   "private": true,
