@@ -52,6 +52,11 @@ class Widgets extends React.Component {
       curriculo:null,
       acepta:"*",
       parabuscar:null,
+      asignatura_tareas_activas:{
+        value:null,
+        label:null
+      },
+      materias_tareas_activas:null
     };
     this.handleImageChange = this.handleImageChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -110,6 +115,17 @@ class Widgets extends React.Component {
     }
   }
 
+  setGrado_tareas_activas = (value) => {
+    if(value!=undefined){
+      this.setState({ asignatura_tareas_activas: value })
+      if(value.value>6){
+        this.setState({materias_tareas_activas:this.props.Secundaria})
+      }else{
+        this.setState({materias_tareas_activas:this.props.Primaria})
+      }
+    }
+  }
+
   setSeccion = (value) => {
     this.setState({ seccion: value })
   }
@@ -118,9 +134,13 @@ class Widgets extends React.Component {
     this.setState({ modulo: value })
   }
 
-  verTareas = async (id,grado) => {
+  verTareas = async (id,grado,materia) => {
+    if(grado!=="*"){
+      this.setGrado_tareas_activas(grado.value);
+      grado=grado.key;
+    }
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/verRecursos?id='
-      +id+"&grado="+grado;
+      +id+"&grado="+grado+"&materia="+materia;
     let respuesta = await fetch(url, {
         method: 'GET',
         mode: 'cors',
@@ -214,7 +234,7 @@ async uploadFile() {
     if(!this.props.colegio.id){
       this.props.history.push("/auth/login");
     }
-    await this.verTareas(this.props.colegio.id,"*");
+    await this.verTareas(this.props.colegio.id,"*",null);
   }
 
   quitarTarea = async (id) => {
@@ -556,22 +576,40 @@ async uploadFile() {
                   <Card className="card-tasks">
                     <CardHeader>
                       <Row>
-                        <Col md="6">
-                          <CardTitle tag="h4">
+                        <Col md="4">
+                          <CardTitle tag="h3">
                             Tareas Activas
                           </CardTitle>
                         </Col>
-                        <Col md="6">
+                        <Col md="4">
+                          <Select
+                            className="react-select primary"
+                            classNamePrefix="react-select"
+                            name="parabuscar"
+                            value={this.state.parabuscar}
+                            onChange={(value) => {
+                              this.verTareas(this.props.colegio.id,value,null);
+                              this.setState({parabuscar: value });
+                            }}
+                            options={this.props.Grado}
+                            placeholder="Seleccion el Grado o año"
+                          />
+                        </Col>
+                        <Col md="4">
                           <Select
                             className="react-select primary"
                             classNamePrefix="react-select"
                             name="singleSelect"
-                            value={this.state.parabuscar}
-                            onChange={(value) =>
-                              this.verTareas(this.props.colegio.id,value.key)
+                            value={this.state.asignatura_tareas_activas.value}
+                            onChange={(value) => {
+                              this.setGrado_tareas_activas( value );
+                              this.verTareas(this.props.colegio.id,
+                                this.state.parabuscar,
+                                value.value);
+                              }
                             }
-                            options={this.props.Grado}
-                            placeholder="Seleccion el Grado o año"
+                            options={this.state.materias_tareas_activas}
+                            placeholder="Selecciona Asignatura"
                           />
                         </Col>
                       </Row>
@@ -626,7 +664,6 @@ async uploadFile() {
                       <hr />
                       <div className="stats">
                         <i className="fa fa-refresh spin" />
-                        Updated 3 minutes ago
                       </div>
                     </CardFooter>
                   </Card>
