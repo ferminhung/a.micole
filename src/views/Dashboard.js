@@ -76,7 +76,6 @@ class Dashboard extends React.Component {
         console.log(error);
     });
     let result = await respuesta.json();
-    console.log(result)
     let alumnos=[];
     result[0].forEach(envio => {
       if(alumnos.filter(alumno=>alumno==envio.alumno).length==0){

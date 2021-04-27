@@ -78,7 +78,6 @@ class Mensajes extends React.Component {
   }
   setSeccion = (value) => {
     this.setState({ seccion: value })
-    console.log(value)
   }
 
   componentDidMount = async () => {
@@ -104,8 +103,6 @@ class Mensajes extends React.Component {
     });
     let mensajes = await respuesta.json();
     this.setState({ mensajes:mensajes});
-    console.log(mensajes)
-    console.log(codigo)
   }
 
   enviarMensaje = async () =>{
@@ -132,9 +129,14 @@ class Mensajes extends React.Component {
       // seccion:null,
       singleSelect:null,
     });
+<<<<<<< HEAD
     await this.verMensaje(this.props.colegio.codigo);
     let result = await respuesta.json(data);
     console.log(result)
+=======
+      await this.verMensaje(this.props.colegio.codigo);
+      let result = await respuesta.json(data);
+>>>>>>> 43eabac20b4c575e664c3248719712c68fa9ce32
   }
 
   render() {
