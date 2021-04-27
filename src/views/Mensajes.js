@@ -118,12 +118,12 @@ class Mensajes extends React.Component {
     };
     let url='https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/registrarMensaje';
     let respuesta = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers:{
-            'Content-Type': 'application/json'
-        },
-        Accept: 'application/json',
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      Accept: 'application/json',
     })
     .catch(error => {
         console.log(error);
@@ -132,9 +132,9 @@ class Mensajes extends React.Component {
       // seccion:null,
       singleSelect:null,
     });
-      await this.verMensaje(this.props.colegio.codigo);
-      let result = await respuesta.json(data);
-      console.log(result)
+    await this.verMensaje(this.props.colegio.codigo);
+    let result = await respuesta.json(data);
+    console.log(result)
   }
 
   render() {
