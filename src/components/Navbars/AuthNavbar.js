@@ -1,7 +1,7 @@
-
 import React from "react";
 import classnames from "classnames";
 import { NavLink } from "react-router-dom";
+import {Link} from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -46,11 +46,20 @@ class AuthNavbar extends React.Component {
         expand="lg"
       >
         <Container>
-          {/* <div className="navbar-wrapper">
-            <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
-              Micolegio Aprende
+          <div className="navbar-wrapper">
+            <NavbarBrand href="#" onClick={(e) => e.preventDefault()}>
+              <Link to="/create" className="btn-link">
+                <Button
+                  className="btn-link"
+                  color="warning"
+                  // onClick={() => this.notify("bl")}
+                >
+                  <i className="icon icon-info" />
+                  Crear cuenta
+                </Button>
+              </Link>
             </NavbarBrand>
-          </div> */}
+          </div>
           <button
             aria-controls="navigation-index"
             aria-expanded={false}

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 // reactstrap components
@@ -20,23 +19,26 @@ import {
 import * as mainActions from "../../actions/mainActions";
 import { connect } from 'react-redux';
 
-class Login extends React.Component {
+class CreateAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      email: "",
       codigo:"",
       clave:""
     };
   }
+
   componentDidMount() {
-    document.body.classList.toggle("login-page");
+    document.body.classList.toggle("register-page");
   }
   componentWillUnmount() {
-    document.body.classList.toggle("login-page");
+    document.body.classList.toggle("register-page");
   }
 
   autenticar = async () => {
     const data = {
+      email:this.state.email,
       codigo:this.state.codigo,
       clave:this.state.clave,
     };
@@ -61,16 +63,16 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="login-page">
+      <div className="register-page">
         <Container>
           <Row>
             <Col className="ml-auto mr-auto" lg="4" md="6">
               <Form action="" className="form" method="">
-                <Card className="card-login">
+                <Card className="card-register">
                   <CardHeader>
                     <CardHeader>
                       <h5 className="header text-center">Micolegio Aprende</h5>
-                      <h3 className="header text-center">Registrate</h3>
+                      <h3 className="header text-center">Crea una cuenta</h3>
                     </CardHeader>
                   </CardHeader>
                   <CardBody>
@@ -85,6 +87,19 @@ class Login extends React.Component {
                         value={this.state.codigo}
                         onChange={(e)=>
                           this.setState({codigo:e.target.value})}
+                      />
+                    </InputGroup>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="nc-icon nc-email-85" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Email"
+                        type="text"
+                        value={this.state.email}
+                        onChange={(e)=>
+                          this.setState({email:e.target.value})}
                       />
                     </InputGroup>
                     <InputGroup>
@@ -109,10 +124,10 @@ class Login extends React.Component {
                       block
                       className="btn-round mb-3"
                       color="warning"
-                      href="#pablo"
+                      href="#"
                       onClick={() => this.autenticar()}
                     >
-                      Ingresa
+                      Crear cuenta
                     </Button>
                   </CardFooter>
                 </Card>
@@ -123,7 +138,7 @@ class Login extends React.Component {
         <div
           className="full-page-background"
           style={{
-            backgroundImage: `url(${require("assets/img/loginmicol.png")})`,
+            backgroundImage: `url(${require("assets/img/createMicol.png")})`,
           }}
         />
       </div>
@@ -135,4 +150,4 @@ const mapStateToProps = (reducers) => {
   return reducers.mainReducer;
 }
 
-export default connect(mapStateToProps, mainActions )(Login);
+export default connect(mapStateToProps, mainActions )(CreateAccount);

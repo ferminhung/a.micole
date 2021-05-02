@@ -6,6 +6,8 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 
+import CreateAccount from "views/pages/CreateAccount.js";
+
 // import Chat from "../src/views/pages/Chat.js";
 
 import "bootstrap/dist/css/bootstrap.css";
@@ -33,7 +35,7 @@ ReactDOM.render(
       <Switch>
         <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
         <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-        {/* <Route path="/chat" component={Chat} /> */}
+        <Route path="/create" component={CreateAccount} />
         <Redirect to="/auth/login" />
       </Switch>
     </Router>

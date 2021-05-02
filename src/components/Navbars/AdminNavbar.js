@@ -110,7 +110,7 @@ class AdminNavbar extends React.Component {
               </div>
               <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
                 <span className="d-none d-md-block">
-                  Aprende Micolegio 
+                  Aprende Micolegio
                 </span>
                 <span className="d-block d-md-none">Lado Master</span>
               </NavbarBrand>
