@@ -5,9 +5,7 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
-
 import CreateAccount from "views/pages/CreateAccount.js";
-
 // import Chat from "../src/views/pages/Chat.js";
 
 import "bootstrap/dist/css/bootstrap.css";

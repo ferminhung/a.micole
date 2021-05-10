@@ -9934,7 +9934,7 @@ img {
 .login-page .content .container {
   margin-top: 8vh; }
 
-.login-page .card-login {
+. .card-login {
   border-radius: 6px;
   padding-bottom: 0.7rem; }
   .login-page .card-login .btn-wd {

@@ -109,7 +109,16 @@ class Mensajes extends React.Component {
   }
 
   enviarMensaje = async () =>{
-    const data = {
+    // let grado = this.state.singleSelect;
+    if (this.state.singleSelect == null) {
+      let negado = (
+        <Alert color="info">
+          <span>Se require Grado</span>
+        </Alert>
+      )
+      this.setState({subiendo:negado});
+    } else {
+      const data = {
       plantel:this.props.colegio.codigo,
       grado: this.state.singleSelect,
       seccion:this.state.seccion.value,
@@ -135,6 +144,7 @@ class Mensajes extends React.Component {
     await this.verMensaje(this.props.colegio.codigo);
     let result = await respuesta.json(data);
     console.log(result)
+    }
   }
 
   render() {
@@ -193,7 +203,7 @@ class Mensajes extends React.Component {
                       </Col>
                     </Row>
                     <Row>
-                      <Label md="3">Vencimiento</Label>
+                      <Label md="3">Fecha de envio</Label>
                       <Col md="6">
                         <ReactDatetime
                           inputProps={{
