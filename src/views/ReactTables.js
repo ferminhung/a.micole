@@ -61,7 +61,7 @@ class ReactTables extends React.Component {
       codigo:objectId
     };
     let respuesta = await fetch(url, {
-      method: 'POST', 
+      method: 'POST',
       body: JSON.stringify(data),
       headers:{
           'Content-Type': 'application/json'
@@ -74,15 +74,15 @@ class ReactTables extends React.Component {
     let result = await respuesta.json();
     alert("Alumno Reactivado con exito");
     await this.ir();
-  } 
-  
+  }
+
   bloquearAlumno = async (codigoweb) => {
     let url = "https://webhooks.mongodb-realm.com/api/client/v2.0/app/aprendemicolegio-kmnsj/service/masterside/incoming_webhook/bloquearAlumno"
     const data = {
       codigo:codigoweb
     };
     let respuesta = await fetch(url, {
-      method: 'POST', 
+      method: 'POST',
       body: JSON.stringify(data),
       headers:{
           'Content-Type': 'application/json'
@@ -138,7 +138,7 @@ class ReactTables extends React.Component {
               <i className="fa fa-edit" />
             </Button>{" "}
             {/* use this button to remove the data row */}
-            {prop.codigo=="------" ? 
+            {prop.codigo=="------" ?
               ( <Button
                 onClick={() => {
                   this.activarAlumno(prop._id);

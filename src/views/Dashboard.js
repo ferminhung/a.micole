@@ -22,7 +22,8 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 import ReactBSAlert from "react-bootstrap-sweetalert";
-
+import Select from "react-select";
+import ReactTable from "components/ReactTable/ReactTable.js";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -38,10 +39,28 @@ class Dashboard extends React.Component {
       activos:[],
       revisados:[],
       totalrevisados:0,
+      parabuscar:null,
+      asignatura_tareas_activas:{
+        value:null,
+        label:null
+      },
+      materias_tareas_activas:null,
+      data: [],
     };
   }
   ponerGrados = () =>{
     //this.setState({grados:this.props.grados});
+  }
+
+  setGrado_tareas_activas = (value) => {
+    if(value!=undefined){
+      this.setState({ asignatura_tareas_activas: value })
+      if(value.value>6){
+        this.setState({materias_tareas_activas:this.props.Secundaria})
+      }else{
+        this.setState({materias_tareas_activas:this.props.Primaria})
+      }
+    }
   }
 
   async componentDidMount() {
@@ -55,7 +74,7 @@ class Dashboard extends React.Component {
   }
 
   verEnvios = async () => {
-    let grado=this.props.gradofijo;
+    let grado = this.props.gradofijo;
     if(grado!="" || grado!==undefined){
       grado=grado.substr(3,6).toUpperCase();
     }
@@ -75,7 +94,8 @@ class Dashboard extends React.Component {
     .catch(error => {
         console.log(error);
     });
-    let result = await respuesta.json();
+    let result = await respuesta.json(data);
+    console.log(data)
     let alumnos=[];
     result[0].forEach(envio => {
       if(alumnos.filter(alumno=>alumno==envio.alumno).length==0){
@@ -89,7 +109,10 @@ class Dashboard extends React.Component {
       totalrevisados = "0";
     }
     this.setState({envios:result[0], revisados:result[1],
-      activos: alumnos, totalrevisados:totalrevisados});
+      activos: alumnos, totalrevisados:totalrevisados
+    });
+    console.log(grado)
+    console.log(alumnos)
   }
 
   enviarVista = async (objectid, valor) =>{
@@ -208,6 +231,25 @@ class Dashboard extends React.Component {
       )
     });
   }
+
+  // ir = async () => {
+  //   let table = this.state.envios.filter(tarea=>tarea.status=="1").map(tarea=>{
+  //     return {
+  //       id: tarea._id,
+  //       grado: tarea.grado,
+  //       area: tarea.materia,
+  //       alumno: tarea.alumno,
+  //       fecha: tarea.fecha,
+  //       comentario: tarea.mensaje,
+  //       actions: (
+  //         <div>
+
+  //         </div>
+  //       ),
+  //     }
+  //   })
+  //   this.setState({data:table});
+  // }
   render() {
     return (
       <>
@@ -325,10 +367,30 @@ class Dashboard extends React.Component {
             <Col md="12">
               <Card>
                 <CardHeader>
-                  <CardTitle tag="h4">Tareas por revisar</CardTitle>
-                  <p className="card-category">
-                    Resumen
-                  </p>
+                  <Row>
+                    <Col md="6">
+                      <CardTitle tag="h4">
+                        Tareas por revisar
+                      </CardTitle>
+                      <p className="card-category">
+                        Resumen
+                      </p>
+                    </Col>
+                    <Col md="6">
+                      <Select
+                        className="react-select primary"
+                        classNamePrefix="react-select"
+                        name="parabuscar"
+                        value={this.state.parabuscar}
+                        onChange={(value) => {
+                          this.verEnvios(this.props.colegio.id,value,null);
+                          this.setState({parabuscar: value });
+                        }}
+                        options={this.props.Grado}
+                        placeholder="Seleccion el Grado o año"
+                      />
+                    </Col>
+                  </Row>
                 </CardHeader>
                 <CardBody>
                   <Row>
@@ -358,8 +420,8 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      <Button className="btn-round" 
-                                        color="primary" 
+                                      <Button className="btn-round"
+                                        color="primary"
                                         outline
                                         href={tarea.direccion}
                                             target="_blank"
@@ -373,8 +435,8 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      <Button className="btn-round" 
-                                        color="danger" 
+                                      <Button className="btn-round"
+                                        color="danger"
                                         outline
                                         onClick={()=>this.ponerModal(tarea._id)}
                                       >
@@ -387,30 +449,30 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                   {tarea.direccion ? (
                                     <div className="timeline-footer">
-                                    <Button className="btn-round" 
-                                      color="success" 
+                                    <Button className="btn-round"
+                                      color="success"
                                       outline
                                       onClick={()=>this.ponerModal(tarea._id)}
                                     >
                                       {tarea.vista=="1" ? (
                                         <i className="fa fa-check" />
-                                      ):( 
+                                      ):(
                                         tarea.vista=="2" ? (
                                           <i className="fa fa-plus" />
-                                        ) : ( 
+                                        ) : (
                                           <i className="fa fa-heart" />
                                         )
                                       )}
                                     </Button>
                                     </div>
                                   ) : (null)}
-                                </td>  
+                                </td>
                                 )}
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      <Button className="btn-round" 
-                                        color="warning" 
+                                      <Button className="btn-round"
+                                        color="warning"
                                         outline
                                         onClick={()=>this.ponerModalconCaja(tarea._id)}
                                       >
@@ -464,8 +526,8 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      <Button className="btn-round" 
-                                        color="primary" 
+                                      <Button className="btn-round"
+                                        color="primary"
                                         outline
                                         href={tarea.direccion}
                                             target="_blank"
@@ -479,8 +541,8 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      <Button className="btn-round" 
-                                        color="danger" 
+                                      <Button className="btn-round"
+                                        color="danger"
                                         outline
                                         onClick={()=>this.ponerModal(tarea._id)}
                                       >
@@ -493,30 +555,30 @@ class Dashboard extends React.Component {
                                 <td className="td-actions text-left">
                                   {tarea.direccion ? (
                                     <div className="timeline-footer">
-                                    <Button className="btn-round" 
-                                      color="success" 
+                                    <Button className="btn-round"
+                                      color="success"
                                       outline
                                       onClick={()=>this.ponerModal(tarea._id)}
                                     >
                                       {tarea.vista=="1" ? (
                                         <i className="fa fa-check" />
-                                      ):( 
+                                      ):(
                                         tarea.vista=="2" ? (
                                           <i className="fa fa-plus" />
-                                        ) : ( 
+                                        ) : (
                                           <i className="fa fa-heart" />
                                         )
                                       )}
                                     </Button>
                                     </div>
                                   ) : (null)}
-                                </td>  
+                                </td>
                                 )}
                                 <td className="td-actions text-left">
                                     {tarea.direccion ? (
                                       <div className="timeline-footer">
-                                      <Button className="btn-round" 
-                                        color="warning" 
+                                      <Button className="btn-round"
+                                        color="warning"
                                         outline
                                         onClick={()=>this.ponerModalconCaja(tarea._id)}
                                       >
