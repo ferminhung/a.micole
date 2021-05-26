@@ -48,7 +48,7 @@ class AuthNavbar extends React.Component {
         <Container>
           <div className="navbar-wrapper">
             <NavbarBrand href="#" onClick={(e) => e.preventDefault()}>
-              <Link to="/create" className="btn-link">
+              {/* <Link to="/create" className="btn-link">
                 <Button
                   className="btn-link"
                   color="warning"
@@ -57,7 +57,7 @@ class AuthNavbar extends React.Component {
                   <i className="icon icon-info" />
                   Crear cuenta
                 </Button>
-              </Link>
+              </Link> */}
             </NavbarBrand>
           </div>
           <button

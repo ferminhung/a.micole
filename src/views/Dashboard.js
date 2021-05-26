@@ -48,6 +48,13 @@ class Dashboard extends React.Component {
       data: [],
     };
   }
+
+  handleRefresh = () => {
+    // by calling this method react re-renders the component
+    this.verEnvios();
+    console.log("Pagina Refrescada")
+  };
+
   ponerGrados = () =>{
     //this.setState({grados:this.props.grados});
   }
@@ -95,8 +102,9 @@ class Dashboard extends React.Component {
         console.log(error);
     });
     let result = await respuesta.json(data);
-    console.log(data)
     let alumnos=[];
+    console.log(alumnos)
+    console.log(result)
     result[0].forEach(envio => {
       if(alumnos.filter(alumno=>alumno==envio.alumno).length==0){
         alumnos.push(envio.alumno)
@@ -111,8 +119,6 @@ class Dashboard extends React.Component {
     this.setState({envios:result[0], revisados:result[1],
       activos: alumnos, totalrevisados:totalrevisados
     });
-    console.log(grado)
-    console.log(alumnos)
   }
 
   enviarVista = async (objectid, valor) =>{
@@ -232,24 +238,6 @@ class Dashboard extends React.Component {
     });
   }
 
-  // ir = async () => {
-  //   let table = this.state.envios.filter(tarea=>tarea.status=="1").map(tarea=>{
-  //     return {
-  //       id: tarea._id,
-  //       grado: tarea.grado,
-  //       area: tarea.materia,
-  //       alumno: tarea.alumno,
-  //       fecha: tarea.fecha,
-  //       comentario: tarea.mensaje,
-  //       actions: (
-  //         <div>
-
-  //         </div>
-  //       ),
-  //     }
-  //   })
-  //   this.setState({data:table});
-  // }
   render() {
     return (
       <>
@@ -370,6 +358,9 @@ class Dashboard extends React.Component {
                   <Row>
                     <Col md="6">
                       <CardTitle tag="h4">
+                        {/* <Button className="btn-round btn-icon" className="btn-link " color="info">
+                          <i className="nc-icon nc-refresh-69" />
+                        </Button> */}
                         Tareas por revisar
                       </CardTitle>
                       <p className="card-category">
@@ -389,6 +380,14 @@ class Dashboard extends React.Component {
                         options={this.props.Grado}
                         placeholder="Seleccion el Grado o año"
                       />
+                      <Button
+                        onClick={this.handleRefresh}
+                        className="btn-round btn-icon"
+                        className="btn-link "
+                        color="info"
+                      >
+                        <i className="nc-icon nc-refresh-69" /> Refrescar
+                      </Button>
                     </Col>
                   </Row>
                 </CardHeader>
